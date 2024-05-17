@@ -18,9 +18,9 @@ import os
 # def is_port_in_use(port):
 #     try:
 #         result = subprocess.run(['netstat', '-an'], stdout=subprocess.PIPE)
-#         output = result.stdout.decode('utf-8', errors='ignore')  # Используем 'ignore' для игнорирования ошибок декодирования
+#         output = result.stdout.decode('utf-8', errors='ignore')
 #     except UnicodeDecodeError:
-#         return False  # В случае ошибки декодирования, предположим, что порт не используется
+#         return False
 #
 #     regex = re.compile(r'.*:' + str(port) + r'\s')
 #     return any(regex.match(line) for line in output.splitlines())
@@ -76,24 +76,24 @@ def download_video(video_url, local_filename, cookies):
 # Переход на сайт и ввод пароля и логина для получения ссылок
 try:
     driver.get(url) # Открытие указанного URL в браузере через WebDriver
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "username"))) # Ожидание появления поля ввода имени пользователя на странице в течение 10 секунд
-    username_field = driver.find_element(By.ID, "username") # Нахождение поля ввода имени пользователя
-    username_field.send_keys(username) # Ввод имени пользователя в найденное поле
-    password_field = driver.find_element(By.ID, "password") # Нахождение поля ввода пароля
-    password_field.send_keys(password) # Ввод пароля в найденное поле
-    password_field.send_keys(Keys.RETURN) # Имитация нажатия клавиши Enter для отправки формы
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "username")))
+    username_field = driver.find_element(By.ID, "username")
+    username_field.send_keys(username)
+    password_field = driver.find_element(By.ID, "password") 
+    password_field.send_keys(password)
+    password_field.send_keys(Keys.RETURN)
 
     # Время ожидания
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "topic_link"))) # Ожидание появления элементов с классом "topic_link" на странице
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "topic_link"))) 
 
-    selenium_cookies = {c['name']: c['value'] for c in driver.get_cookies()} # Сохранение cookies из браузера в переменную
-    soup = BeautifulSoup(driver.page_source, 'html.parser') # Использование BeautifulSoup для парсинга исходного кода страницы
-    video_links = soup.find_all('a', class_='topic_link', href=True) # Поиск всех ссылок с классом "topic_link"
+    selenium_cookies = {c['name']: c['value'] for c in driver.get_cookies()} 
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    video_links = soup.find_all('a', class_='topic_link', href=True) 
 
     video_count = 1
     for link in video_links: # Цикл по всем найденным ссылкам
-        video_title = clean_filename(link.get_text().strip()) # Очистка и форматирование названия видео
-        local_filename_mp4 = os.path.join(save_path, f"{video_count}.{video_title}.mp4") # Формирование пути для сохранения видео
+        video_title = clean_filename(link.get_text().strip()) 
+        local_filename_mp4 = os.path.join(save_path, f"{video_count}.{video_title}.mp4") 
 
         # Проверка, существует ли файл видео уже в папке загрузки
         if os.path.exists(local_filename_mp4):
@@ -103,9 +103,9 @@ try:
 
         video_link_url = link['href'] # Получение URL видео
         if video_link_url.startswith("https://e.muiv.ru/play_video/index.html?f_name="):
-            driver.get(video_link_url) # Переход по ссылке видео
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'video'))) # Ожидание появления элемента video на странице
-            video_url = driver.execute_script("return document.querySelector('video').src;") # Получение прямой ссылки на видео
+            driver.get(video_link_url) 
+            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'video'))) 
+            video_url = driver.execute_script("return document.querySelector('video').src;")
 
             download_video(video_url, local_filename_mp4, selenium_cookies) # Скачивание видео
             print(f"Видео {video_count} скачано и сохранено локально")
