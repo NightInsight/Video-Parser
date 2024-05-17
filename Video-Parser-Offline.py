@@ -107,7 +107,7 @@ try:
             WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.TAG_NAME, 'video'))) 
             video_url = driver.execute_script("return document.querySelector('video').src;")
 
-            download_video(video_url, local_filename_mp4, selenium_cookies) # Скачивание видео
+            download_video(video_url, local_filename_mp4, selenium_cookies)
             print(f"Видео {video_count} скачано и сохранено локально")
 
         video_count += 1
